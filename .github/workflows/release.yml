@@ -47,11 +47,15 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-      - name: Setup Flutter
+      - name: Setup Flutter (пін з .github/flutter-version)
         uses: subosito/flutter-action@v2
         with:
+          flutter-version-file: .github/flutter-version
           channel: stable
           cache: true
+
+      - name: Disable analytics (CI)
+        run: flutter config --no-analytics
 
       - name: Versions
         run: |

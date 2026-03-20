@@ -9,6 +9,7 @@
 2. На [pub.dev](https://pub.dev) для пакета увімкнено **Automated publishing** з цим GitHub-репозиторієм (OIDC).  
    Деталі: [Automated publishing](https://dart.dev/tools/pub/automated-publishing).
 3. У workflow є `permissions: id-token: write` — потрібно для OIDC до pub.dev.
+4. Версія **Flutter для CI** задається в **`.github/flutter-version`** (один рядок, наприклад `3.27.4`). Workflows `release.yml` і `test.yml` використовують `flutter-version-file` — не залежать від Dart на образі `ubuntu-latest`.
 
 ## Кроки для релізу 1.0.0
 

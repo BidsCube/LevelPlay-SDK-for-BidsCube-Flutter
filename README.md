@@ -18,8 +18,8 @@ A comprehensive Flutter SDK for displaying image, video, and native ads across a
 
 ## Requirements
 
-- Flutter 3.8.1+
-- Dart 3.0+
+- Flutter **3.19.0+** (рекомендовано збігатися з рядком у **`.github/flutter-version`** для CI)
+- Dart **3.5.0+** (обмеження в `pubspec.yaml` → `environment.sdk`)
 - **Android (native channel)**: API 24+; до появи `com.bidscube:bidscube-sdk` у Maven Central для збірки потрібен **`mavenLocal()`** після `./gradlew :sdk:publishReleasePublicationToMavenLocal` у репозиторії `LevelPlay-SDK-Android` (див. `android/libs/README.md`).
 - Platform-specific requirements:
   - **Android**: API level 21+ for Flutter-only mode; **24+** when using the native Android SDK
@@ -436,7 +436,7 @@ final config = SDKConfig.builder()
    - Verify video URL is accessible
 
 3. **Build errors**:
-   - Ensure Flutter 3.8.1+ is installed
+   - Ensure Flutter 3.19+ / Dart 3.5+ (see `pubspec.yaml` and `.github/flutter-version` for CI)
    - Check platform-specific requirements
    - Verify all dependencies are properly configured
 
