@@ -1,0 +1,12 @@
+# Ignore testapp folder from published package
+# This prevents the test application and its files from being included in the package
+
+testapp/
+
+# You can add more patterns to exclude other dev-only files if necessary
+# For example:
+# .github/
+# .idea/
+# build/
+# scripts/
+
