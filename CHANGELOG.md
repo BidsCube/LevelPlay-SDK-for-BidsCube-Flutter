@@ -1,11 +1,11 @@
 ## 1.0.0
 
-* Вирівняна версія зі стеком LevelPlay / Bidscube **1.0.0** (Android, iOS, Unity).
-* **LevelPlay**: `BidscubeIntegrationMode` / `SDKConfig.integrationMode` — `levelPlayMediation` ініціалізує нативний SDK; методи віджетів Dart вимкнені (реклама через IronSource/LevelPlay). Див. `Documentation~/LEVELPLAY.md`.
-* **Android plugin**: Flutter plugin (`android/src/main/...`, `BidscubeSdkFlutterPlugin`), нативний SDK `com.bidscube:bidscube-sdk:1.0.0` + `mavenLocal()` для локальної розробки, `ActivityAware`, колбеки в Dart, PlatformView `bidscube_native_ad`.
-* **iOS plugin**: banner через `getImageAdView`, унікальні `viewId`, колбеки в Dart.
-* **Dart**: `AndroidView` на Android для нативних оголошень; повноцінний `example/`.
-* Android: транзитивні залежності SDK, desugar 2.1.3 у прикладі, minSdk 24.
+* Version aligned with LevelPlay / Bidscube stack **1.0.0** (Android, iOS, Unity).
+* **LevelPlay**: `BidscubeIntegrationMode` / `SDKConfig.integrationMode` — `levelPlayMediation` initializes the native SDK; Dart widget methods are disabled (ads via IronSource/LevelPlay). Documented in the README **LevelPlay (IronSource) mediation** section.
+* **Android plugin**: Flutter plugin (`android/src/main/...`, `BidscubeSdkFlutterPlugin`), native SDK `com.bidscube:bidscube-sdk:1.0.0` + `mavenLocal()` for local dev, `ActivityAware`, callbacks to Dart, PlatformView `bidscube_native_ad`.
+* **iOS plugin**: banner via `getImageAdView`, unique `viewId`, callbacks to Dart.
+* **Dart**: `AndroidView` on Android for native ads; full `example/`.
+* Android: transitive SDK dependencies, desugar 2.1.3 in example, minSdk 24.
 * Version / pub.dev compliance updates
 
 ## 1.2.0

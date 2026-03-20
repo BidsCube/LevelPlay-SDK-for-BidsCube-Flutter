@@ -1,6 +1,6 @@
-# BidsCube Flutter SDK
+# BidsCube Flutter SDK (`bidscube_sdk_flutter`)
 
-A comprehensive Flutter SDK for displaying image, video, and native ads across all platforms (Android, iOS, Web, Desktop). The SDK provides a unified API for ad management with platform-specific optimizations.
+**`bidscube_sdk_flutter`** is the **BidsCube** Flutter plugin and a **LevelPlay (IronSource) mediation adapter** on Android and iOS: native custom-network adapters talk to the same `BidscubeSDK` instance you initialize from Dart. In **direct SDK** mode you also get image, video, native, and banner widgets for Android, iOS, Web, and desktop where supported.
 
 ## Features
 
@@ -18,9 +18,9 @@ A comprehensive Flutter SDK for displaying image, video, and native ads across a
 
 ## Requirements
 
-- Flutter **3.19.0+** (рекомендовано збігатися з рядком у **`.github/flutter-version`** для CI)
-- Dart **3.5.0+** (обмеження в `pubspec.yaml` → `environment.sdk`)
-- **Android (native channel)**: API 24+; до появи `com.bidscube:bidscube-sdk` у Maven Central для збірки потрібен **`mavenLocal()`** після `./gradlew :sdk:publishReleasePublicationToMavenLocal` у репозиторії `LevelPlay-SDK-Android` (див. `android/libs/README.md`).
+- Flutter **3.19.0+** (prefer matching **`.github/flutter-version`** for CI)
+- Dart **3.5.0+** (see `pubspec.yaml` → `environment.sdk`)
+- **Android (native channel)**: API 24+; until `com.bidscube:bidscube-sdk` is on Maven Central, builds need **`mavenLocal()`** after `./gradlew :sdk:publishReleasePublicationToMavenLocal` in the `LevelPlay-SDK-Android` repo (see `android/libs/README.md`).
 - Platform-specific requirements:
   - **Android**: API level 21+ for Flutter-only mode; **24+** when using the native Android SDK
   - **iOS**: iOS 13.0+
@@ -29,11 +29,16 @@ A comprehensive Flutter SDK for displaying image, video, and native ads across a
 
 ## LevelPlay (IronSource) mediation
 
-Bidscube у Flutter працює через **нативні** адаптери LevelPlay (Android/iOS), а не через окремий Dart-адаптер. У Dart достатньо **ініціалізувати** нативний SDK і керувати рекламою через IronSource/LevelPlay (наприклад `ironsource_mediation`).
+Bidscube joins LevelPlay through **native** adapters (Android/iOS), not a separate Dart adapter. This package exposes **early `BidscubeSDK.initialize`** so those adapters share one SDK instance. In **`BidscubeIntegrationMode.levelPlayMediation`**, Dart helpers like `getBannerAdView` are **disabled** — load and show ads with **IronSource / LevelPlay** (e.g. `ironsource_mediation` or your native stack). You must use the **native** path: `useFlutterOnly: false`. Do not combine `FlutterOnlyBidscube` with `levelPlayMediation`.
 
-Детально: **[Documentation~/LEVELPLAY.md](Documentation~/LEVELPLAY.md)**.
+**Android (app module):** add IronSource/LevelPlay mediation, `bidscube-sdk`, and the Bidscube LevelPlay adapter (versions from your `LevelPlay-SDK-Android` / Maven). In the LevelPlay dashboard use classes under `com.ironsource.adapters.custom.bidscube`; instance data is the Bidscube **placementId**. Until `bidscube-sdk` is on Maven Central, use **`mavenLocal()`** as in Requirements. The plugin already pulls `bidscube-sdk` for PlatformView / direct mode — add the **LevelPlay adapter in the app** so mediation is optional for consumers.
 
-Коротко:
+**iOS:** add `BidscubeSDK`, IronSource, and `LevelPlayMediationBidscubeAdapter` to your `Podfile` (tags/versions per the iOS adapter repo). Adapter classes follow the `ISBidscubeCustom*` pattern.
+
+| Mode | Ads via LevelPlay | `getBannerAdView` / … |
+|------|-------------------|------------------------|
+| `directSdk` (default) | Only if you added IronSource yourself | Yes (native SDK + PlatformView) |
+| `levelPlayMediation` | Yes (native layer) | No — throws `UnsupportedError` |
 
 ```dart
 await BidscubeSDK.initialize(
@@ -42,12 +47,12 @@ await BidscubeSDK.initialize(
       .build(),
   useFlutterOnly: false,
 );
-// Далі — завантаження/показ через LevelPlay; getBannerAdView тощо не використовуються.
+// Then load/show via LevelPlay / IronSource; getBannerAdView etc. are not used.
 ```
 
-## Реліз версії (maintainers)
+## Releasing (maintainers)
 
-Інструкція з тегами, pub.dev OIDC і GitHub Release: **[RELEASE.md](RELEASE.md)**. Workflow: `.github/workflows/release.yml`.
+Tags, pub.dev OIDC, and GitHub Release: **[RELEASE.md](RELEASE.md)**. Workflow: `.github/workflows/release.yml`.
 
 ## Installation
 

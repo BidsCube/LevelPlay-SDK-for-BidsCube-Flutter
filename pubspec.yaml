@@ -1,5 +1,5 @@
 name: bidscube_sdk_flutter
-description: "BidsCube Flutter SDK for displaying image, video, and native ads across all platforms."
+description: "BidsCube Flutter plugin and LevelPlay (IronSource) mediation adapter: native Android/iOS bridge to Bidscube for LevelPlay custom networks, plus direct SDK widgets for image, video, and native ads."
 version: 1.0.0
 homepage: https://github.com/bidscube/bidscube-sdk-flutter
 
