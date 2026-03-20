@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
 class ExampleAdCallback implements AdCallback {
   @override
   void Function(String placementId, String adm, AdPosition position)?
-  onAdRenderOverride;
+      onAdRenderOverride;
 
   @override
   void onAdLoading(String placementId) {

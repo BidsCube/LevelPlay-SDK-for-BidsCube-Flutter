@@ -32,7 +32,7 @@ class VastParser {
     // Parse ad system
     final adSystem =
         inlineElement.findElements('AdSystem').firstOrNull?.innerText ??
-        'Unknown';
+            'Unknown';
 
     // Parse ad title
     final adTitle =
@@ -79,9 +79,8 @@ class VastParser {
       return _parseLinearCreative(linearElement);
     }
 
-    final nonLinearElement = creativeElement
-        .findElements('NonLinear')
-        .firstOrNull;
+    final nonLinearElement =
+        creativeElement.findElements('NonLinear').firstOrNull;
     if (nonLinearElement != null) {
       return _parseNonLinearCreative(nonLinearElement);
     }
@@ -93,7 +92,7 @@ class VastParser {
     // Parse duration
     final duration =
         linearElement.findElements('Duration').firstOrNull?.innerText ??
-        '00:00:30';
+            '00:00:30';
 
     // Parse media files
     final mediaFiles = <VastMediaFile>[];
@@ -113,9 +112,8 @@ class VastParser {
 
     // Parse tracking events
     final trackingEvents = <VastTrackingEvent>[];
-    final trackingElement = linearElement
-        .findElements('TrackingEvents')
-        .firstOrNull;
+    final trackingElement =
+        linearElement.findElements('TrackingEvents').firstOrNull;
     if (trackingElement != null) {
       final trackingEventElements = trackingElement.findElements('Tracking');
       for (final trackingEventElement in trackingEventElements) {
@@ -129,13 +127,11 @@ class VastParser {
 
     // Parse video clicks
     final videoClicks = <VastVideoClick>[];
-    final videoClicksElement = linearElement
-        .findElements('VideoClicks')
-        .firstOrNull;
+    final videoClicksElement =
+        linearElement.findElements('VideoClicks').firstOrNull;
     if (videoClicksElement != null) {
-      final clickThroughElement = videoClicksElement
-          .findElements('ClickThrough')
-          .firstOrNull;
+      final clickThroughElement =
+          videoClicksElement.findElements('ClickThrough').firstOrNull;
       if (clickThroughElement != null) {
         videoClicks.add(
           VastVideoClick(
@@ -185,9 +181,8 @@ class VastParser {
 
     // Parse tracking events for non-linear ads
     final trackingEvents = <VastTrackingEvent>[];
-    final trackingElement = nonLinearElement
-        .findElements('TrackingEvents')
-        .firstOrNull;
+    final trackingElement =
+        nonLinearElement.findElements('TrackingEvents').firstOrNull;
     if (trackingElement != null) {
       final trackingEventElements = trackingElement.findElements('Tracking');
       for (final trackingEventElement in trackingEventElements) {

@@ -236,8 +236,7 @@ class URLBuilder {
       if (Platform.isAndroid) {
         try {
           // Call Android method to check advertising tracking status
-          final bool isTrackingEnabled =
-              await platform.invokeMethod<bool>(
+          final bool isTrackingEnabled = await platform.invokeMethod<bool>(
                 'isAdvertisingTrackingEnabled',
               ) ??
               true;
@@ -257,8 +256,7 @@ class URLBuilder {
       } else if (Platform.isIOS) {
         try {
           // Call iOS method to check ASIdentifierManager.isAdvertisingTrackingEnabled
-          final bool isTrackingEnabled =
-              await platform.invokeMethod<bool>(
+          final bool isTrackingEnabled = await platform.invokeMethod<bool>(
                 'isAdvertisingTrackingEnabled',
               ) ??
               true;

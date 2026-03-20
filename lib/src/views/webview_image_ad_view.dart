@@ -636,29 +636,29 @@ class _WebViewImageAdViewState extends State<WebViewImageAdView> {
                 ),
               )
             : _hasError
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.block, color: Colors.grey, size: 48),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Ad not loaded or placement ID does not exist',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.block, color: Colors.grey, size: 48),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Ad not loaded or placement ID does not exist',
+                          style: TextStyle(color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: _loadAd,
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: _loadAd,
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              )
-            : GestureDetector(
-                onTap: _handleAdClick,
-                child: WebViewWidget(controller: _controller),
-              ),
+                  )
+                : GestureDetector(
+                    onTap: _handleAdClick,
+                    child: WebViewWidget(controller: _controller),
+                  ),
       ),
     );
   }

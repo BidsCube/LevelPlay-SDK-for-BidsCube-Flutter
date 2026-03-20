@@ -320,8 +320,7 @@ class MethodChannelBidscube extends BidscubePlatform {
     if (result is! Map) {
       return _placeholderAd(placementId, 'Invalid native response');
     }
-    final viewKey =
-        result['viewKey'] as String? ?? result['viewId'] as String?;
+    final viewKey = result['viewKey'] as String? ?? result['viewId'] as String?;
     if (viewKey == null || viewKey.isEmpty) {
       return _placeholderAd(placementId, 'Missing native view handle');
     }
@@ -374,7 +373,8 @@ class MethodChannelBidscube extends BidscubePlatform {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Text('$message\n($placementId)', textAlign: TextAlign.center),
+            child:
+                Text('$message\n($placementId)', textAlign: TextAlign.center),
           ),
         ),
       ),

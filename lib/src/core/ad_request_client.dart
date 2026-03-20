@@ -23,9 +23,9 @@ class AdRequestClient {
     String? baseUrl,
     Duration? timeout,
     Map<String, String>? defaultHeaders,
-  }) : baseUrl = baseUrl ?? Constants.baseURL,
-       timeout = timeout ?? _defaultTimeout,
-       _defaultHeaders = defaultHeaders ?? {};
+  })  : baseUrl = baseUrl ?? Constants.baseURL,
+        timeout = timeout ?? _defaultTimeout,
+        _defaultHeaders = defaultHeaders ?? {};
 
   /// Request native ad
   Future<Map<String, dynamic>?> requestNativeAd({
@@ -57,9 +57,8 @@ class AdRequestClient {
         ...additionalHeaders ?? {},
       };
 
-      final response = await http
-          .get(uri, headers: requestHeaders)
-          .timeout(timeout);
+      final response =
+          await http.get(uri, headers: requestHeaders).timeout(timeout);
 
       SDKLogger.info('Native ad response: ${response.statusCode}');
 
@@ -109,9 +108,8 @@ class AdRequestClient {
         ...additionalHeaders ?? {},
       };
 
-      final response = await http
-          .get(uri, headers: requestHeaders)
-          .timeout(timeout);
+      final response =
+          await http.get(uri, headers: requestHeaders).timeout(timeout);
 
       SDKLogger.info('Banner ad response: ${response.statusCode}');
 
@@ -161,9 +159,8 @@ class AdRequestClient {
         ...additionalHeaders ?? {},
       };
 
-      final response = await http
-          .get(uri, headers: requestHeaders)
-          .timeout(timeout);
+      final response =
+          await http.get(uri, headers: requestHeaders).timeout(timeout);
 
       SDKLogger.info('Video ad response: ${response.statusCode}');
 

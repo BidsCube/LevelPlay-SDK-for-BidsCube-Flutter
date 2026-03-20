@@ -32,7 +32,7 @@ abstract class AdCallback {
 
   /// Called when ad render is overridden
   void Function(String placementId, String adm, AdPosition position)?
-  onAdRenderOverride;
+      onAdRenderOverride;
 }
 
 /// Default implementation of AdCallback
@@ -86,5 +86,5 @@ class DefaultAdCallback implements AdCallback {
 
   @override
   void Function(String placementId, String adm, AdPosition position)?
-  onAdRenderOverride;
+      onAdRenderOverride;
 }

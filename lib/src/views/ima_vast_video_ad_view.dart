@@ -206,9 +206,8 @@ class _ImaVastVideoAdViewState extends State<ImaVastVideoAdView>
             if (jsonResponse['adm'] != null) {
               // Preserve adm and serialize if needed
               final dynamic admValue = jsonResponse['adm'];
-              final String admString = admValue is String
-                  ? admValue
-                  : json.encode(admValue);
+              final String admString =
+                  admValue is String ? admValue : json.encode(admValue);
 
               // If host app provided onAdRenderOverride, call it and skip SDK rendering
               if (widget.callback?.onAdRenderOverride != null) {

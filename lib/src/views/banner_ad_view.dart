@@ -70,22 +70,22 @@ class _BannerAdViewState extends State<BannerAdView> {
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _hasError
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.block, color: Colors.grey, size: 32),
-                  const SizedBox(height: 8),
-                  Text(
-                    _errorMessage ??
-                        'Ad not loaded or placement ID does not exist',
-                    style: const TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.block, color: Colors.grey, size: 32),
+                      const SizedBox(height: 8),
+                      Text(
+                        _errorMessage ??
+                            'Ad not loaded or placement ID does not exist',
+                        style: const TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : const Center(child: Text('No ad content available')),
+                )
+              : const Center(child: Text('No ad content available')),
     );
   }
 }

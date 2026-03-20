@@ -154,8 +154,8 @@ class _FlutterNativeAdViewState extends State<FlutterNativeAdView> {
                 try {
                   final admString = data['adm'] != null
                       ? (data['adm'] is String
-                            ? data['adm'] as String
-                            : json.encode(admData))
+                          ? data['adm'] as String
+                          : json.encode(admData))
                       : json.encode(data);
                   widget.callback?.onAdRenderOverride!(
                     widget.placementId,
@@ -254,9 +254,10 @@ class _FlutterNativeAdViewState extends State<FlutterNativeAdView> {
         SDKLogger.info(
           '[IMP_TRACK] send placement=${widget.placementId} index=$i url=$tracker',
         );
-        final response = await http.get(uri, headers: await _requestHeaders()).timeout(
-          const Duration(seconds: 10),
-        );
+        final response =
+            await http.get(uri, headers: await _requestHeaders()).timeout(
+                  const Duration(seconds: 10),
+                );
         final bodyPreview = _short(response.body, 180);
         SDKLogger.info(
           '[IMP_TRACK] result placement=${widget.placementId} index=$i status=${response.statusCode} body="$bodyPreview"',
@@ -337,7 +338,8 @@ class _FlutterNativeAdViewState extends State<FlutterNativeAdView> {
       );
     } else {
       final eventTrackers = native['eventtrackers'];
-      final eventTrackersCount = eventTrackers is List ? eventTrackers.length : 0;
+      final eventTrackersCount =
+          eventTrackers is List ? eventTrackers.length : 0;
       SDKLogger.warning(
         '[IMP_TRACK] parsed placement=${widget.placementId} imptrackers=0 eventtrackers=$eventTrackersCount',
       );
@@ -350,9 +352,8 @@ class _FlutterNativeAdViewState extends State<FlutterNativeAdView> {
       clickUrl: clickUrl,
       callToAction: 'Learn More',
       advertiser: 'Sponsored',
-      impressionTrackers: impressionTrackers.isNotEmpty
-          ? impressionTrackers
-          : null,
+      impressionTrackers:
+          impressionTrackers.isNotEmpty ? impressionTrackers : null,
     );
   }
 
@@ -399,28 +400,28 @@ class _FlutterNativeAdViewState extends State<FlutterNativeAdView> {
                 ),
               )
             : _hasError
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.block, color: Colors.grey, size: 48),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Ad not loaded or placement ID does not exist',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.block, color: Colors.grey, size: 48),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Ad not loaded or placement ID does not exist',
+                          style: TextStyle(color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: _loadNativeAd,
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: _loadNativeAd,
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              )
-            : _adData != null
-            ? _buildNativeAdContent()
-            : const Center(child: Text('No ad data available')),
+                  )
+                : _adData != null
+                    ? _buildNativeAdContent()
+                    : const Center(child: Text('No ad data available')),
       ),
     );
   }
