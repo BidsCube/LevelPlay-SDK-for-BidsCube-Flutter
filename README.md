@@ -29,26 +29,112 @@
 
 ## LevelPlay (IronSource) mediation
 
-Bidscube joins LevelPlay through **native** adapters (Android/iOS), not a separate Dart adapter. This package exposes **early `BidscubeSDK.initialize`** so those adapters share one SDK instance. In **`BidscubeIntegrationMode.levelPlayMediation`**, Dart helpers like `getBannerAdView` are **disabled** — load and show ads with **IronSource / LevelPlay** (e.g. `ironsource_mediation` or your native stack). You must use the **native** path: `useFlutterOnly: false`. Do not combine `FlutterOnlyBidscube` with `levelPlayMediation`.
+Bidscube joins **LevelPlay** through **native** Android/iOS adapters (`levelplay-bidscube-adapter`, iOS `LevelPlayMediationBidscubeAdapter`). This plugin supplies **`bidscube-sdk`** and lets you run **`BidscubeSDK.initialize`** from Dart **before** IronSource / LevelPlay starts so adapters share one SDK instance.
 
-**Android (app module):** add IronSource/LevelPlay mediation, `bidscube-sdk`, and the Bidscube LevelPlay adapter (versions from your `LevelPlay-SDK-Android` / Maven). In the LevelPlay dashboard use classes under `com.ironsource.adapters.custom.bidscube`; instance data is the Bidscube **placementId**. Until `bidscube-sdk` is on Maven Central, use **`mavenLocal()`** as in Requirements. The plugin already pulls `bidscube-sdk` for PlatformView / direct mode — add the **LevelPlay adapter in the app** so mediation is optional for consumers.
-
-**iOS:** add `BidscubeSDK`, IronSource, and `LevelPlayMediationBidscubeAdapter` to your `Podfile` (tags/versions per the iOS adapter repo). Adapter classes follow the `ISBidscubeCustom*` pattern.
+In **`levelPlayMediation`**, **`getBannerAdView` / `getImageAdView` / … are disabled** — use **IronSource / LevelPlay** to load and show ads ([`ironsource_mediation`](https://pub.dev/packages/ironsource_mediation) or native init).
 
 | Mode | Ads via LevelPlay | `getBannerAdView` / … |
 |------|-------------------|------------------------|
-| `directSdk` (default) | Only if you added IronSource yourself | Yes (native SDK + PlatformView) |
-| `levelPlayMediation` | Yes (native layer) | No — throws `UnsupportedError` |
+| `directSdk` (default) | Only if you added IronSource yourself | Yes |
+| `levelPlayMediation` | Yes (native layer) | No — `UnsupportedError` |
+
+**Rules:** **`useFlutterOnly: false`**. Do not combine **`FlutterOnlyBidscube`** with **`levelPlayMediation`**.
+
+### 1. Dependencies
+
+Add **`bidscube_sdk_flutter`** ([Installation](#installation)). Optionally add **[`ironsource_mediation`](https://pub.dev/packages/ironsource_mediation)** (pick a version compatible with your LevelPlay / IronSource Flutter guide).
+
+### 2. Initialize Bidscube before IronSource / LevelPlay
+
+Call **`BidscubeSDK.initialize`** right after **`WidgetsFlutterBinding.ensureInitialized()`** and **before** `LevelPlay.init` / IronSource init. Full flow:
+
+### Example: `main()` entrypoint
 
 ```dart
-await BidscubeSDK.initialize(
-  config: SDKConfig.builder()
-      .integrationMode(BidscubeIntegrationMode.levelPlayMediation)
-      .build(),
-  useFlutterOnly: false,
-);
-// Then load/show via LevelPlay / IronSource; getBannerAdView etc. are not used.
+import 'package:flutter/material.dart';
+import 'package:bidscube_sdk_flutter/bidscube_sdk_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await BidscubeSDK.initialize(
+    config: SDKConfig.builder()
+        .baseURL('https://ssp-bcc-ads.com/sdk')
+        .integrationMode(BidscubeIntegrationMode.levelPlayMediation)
+        .build(),
+    useFlutterOnly: false,
+  );
+
+  // Next: LevelPlay / IronSource init (App Key from dashboard), consent, then
+  // load/show via ironsource_mediation. No Bidscube get*AdView calls in this mode.
+
+  runApp(const MaterialApp(home: Scaffold(body: Center(child: Text('App')))));
+}
 ```
+
+### 3. Android — Gradle (`android/app`)
+
+**Repositories:** until `com.bidscube:bidscube-sdk` and `com.bidscube:levelplay-bidscube-adapter` are on a remote repository you use, publish them locally from **`LevelPlay-SDK-Android`** (see [Requirements](#requirements) and `android/libs/README.md`) and put **`mavenLocal()`** in **`android/settings.gradle.kts`** / root `build.gradle` so it is checked (often **first**).
+
+**`android/app/build.gradle` or `build.gradle.kts`:**
+
+- **`minSdk`**: at least **24** (Bidscube native SDK).
+- If Gradle reports desugaring issues from transitive SDK deps, enable **core library desugaring** in the **application** module (see the plugin’s `example/android/app/build.gradle.kts`).
+
+**Dependencies** (versions must match what you ship — align with [`LevelPlay-SDK-Android`](https://github.com/BidsCube/LevelPlay-SDK-Android) / `gradle/libs.versions.toml`):
+
+```kotlin
+dependencies {
+    // LevelPlay / IronSource mediation (example version — confirm against IronSource docs)
+    implementation("com.unity3d.ads-mediation:mediation-sdk:9.2.0")
+
+    // Bidscube LevelPlay custom adapter (publishes as com.bidscube:levelplay-bidscube-adapter)
+    implementation("com.bidscube:levelplay-bidscube-adapter:1.0.0")
+
+    // Often required alongside mediation-sdk; add if your build fails to resolve:
+    // implementation("com.bidscube:bidscube-sdk:1.0.0")
+}
+```
+
+The Flutter plugin already depends on **`bidscube-sdk`** for its own code paths; adding the **adapter + mediation SDK in the app** wires LevelPlay to Bidscube. Custom adapter entry class for **non-Unity** Android apps is in package **`com.ironsource.adapters.custom.bidscube`** (e.g. **`BidscubeCustomAdapter`** — exact class names are in the Android adapter README).
+
+### 4. iOS — CocoaPods (`ios/Podfile`)
+
+Inside `target 'Runner' do` (after `flutter_install_all_ios_pods`), add pods for **Bidscube**, **IronSource / LevelPlay**, and the **Bidscube LevelPlay adapter** (versions / tags must match your release):
+
+```ruby
+platform :ios, '13.0'
+
+target 'Runner' do
+  use_frameworks!
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  pod 'BidscubeSDK', '1.0.0'
+  pod 'IronSourceSDK', '9.3.0.0' # confirm version with IronSource / LevelPlay iOS docs
+  pod 'LevelPlayMediationBidscubeAdapter',
+      :git => 'https://github.com/BidsCube/LevelPlay-SDK-iOS.git',
+      :tag => 'v1.0.0'
+end
+```
+
+Then:
+
+```bash
+cd ios && pod install && cd ..
+```
+
+### 5. What you set in LevelPlay / IronSource
+
+| Item | Where | Purpose |
+|------|--------|---------|
+| **App Key** | Dashboard → your app (Android / iOS) | Passed into LevelPlay / IronSource SDK initialization in code |
+| **Ad units / placements** | Dashboard | IDs you pass when loading banner / interstitial / rewarded in `ironsource_mediation` (or native API) |
+| **Bidscube as custom network** | Mediation → networks | Add Bidscube so LevelPlay can call the native adapter |
+| **Adapter class (Android)** | Custom network settings | e.g. **`com.ironsource.adapters.custom.bidscube.BidscubeCustomAdapter`** — confirm in [LevelPlay-SDK-Android](https://github.com/BidsCube/LevelPlay-SDK-Android) README |
+| **iOS adapter** | `Podfile` + dashboard | **`LevelPlayMediationBidscubeAdapter`** pod; class names per [LevelPlay-SDK-iOS](https://github.com/BidsCube/LevelPlay-SDK-iOS) |
+| **Instance / custom parameter** | Bidscube network instance | Your **Bidscube placement ID** (same inventory id you would use in direct SDK mode) |
+
+UI labels can differ by IronSource version; the important part is **adapter class** + **Bidscube placement id** on the Bidscube network instance.
 
 ## Releasing (maintainers)
 
@@ -56,20 +142,20 @@ Tags, pub.dev OIDC, and GitHub Release: **[RELEASE.md](RELEASE.md)**. Workflow: 
 
 ## Installation
 
-Add this to your package's `pubspec.yaml` file:
-
 ```yaml
 dependencies:
   bidscube_sdk_flutter: ^1.0.0
 ```
 
-Then run:
+For **LevelPlay**, also add Android/iOS native dependencies and optionally **`ironsource_mediation`** as described in [LevelPlay (IronSource) mediation](#levelplay-ironsource-mediation).
 
 ```bash
 flutter pub get
 ```
 
 ## Quick Start
+
+**Use this section for direct SDK mode (`directSdk`, default).** For **LevelPlay mediation**, follow [LevelPlay (IronSource) mediation](#levelplay-ironsource-mediation) only — do not use `getBannerAdView` / `getImageAdView` / etc. there.
 
 ### 1. Initialize the SDK
 
@@ -477,20 +563,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
-### Version 0.1.0
-
-- Initial release
-- Multi-platform support (Android, iOS, Web, Desktop)
-- Image, Video, and Native ad support
-- Multiple ad positions with dynamic styling
-- VAST video ad support with IMA SDK integration
-- Responsive native ads with flexible layouts
-- Position override functionality for testing
-- Comprehensive error handling and logging
-- Production-ready SDKLogger implementation
-- Unified API across all platforms
-- Real-time position changes with visual feedback
-
----
-
-**BidsCube Flutter SDK** - Making mobile advertising simple and effective across all platforms.
+See **[CHANGELOG.md](CHANGELOG.md)**.
