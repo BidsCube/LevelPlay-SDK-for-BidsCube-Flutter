@@ -1,8 +1,8 @@
-# Реліз на pub.dev + GitHub Release після push тега v* (наприклад v1.0.0).
-# pubspec.yaml → version: має збігатися з тегом без префікса v.
+# pub.dev + GitHub Release on push of tag v* (e.g. v1.0.0).
+# pubspec.yaml version: must match the tag without the v prefix.
 #
-# Налаштування pub.dev (один раз): https://dart.dev/tools/pub/automated-publishing
-# Репозиторій GitHub → pub.dev → Enable automated publishing → OIDC (id-token: write нижче).
+# One-time pub.dev setup: https://dart.dev/tools/pub/automated-publishing
+# GitHub repo → pub.dev → Enable automated publishing → OIDC (id-token: write below).
 
 name: Release (pub.dev + GitHub)
 
@@ -10,7 +10,7 @@ on:
   push:
     tags:
       - "v*"
-  # Ручний запуск: test + analyze + pub publish --dry-run (публікація лише при push тега v*).
+  # Manual run: test + analyze + pub publish --dry-run (publish only on tag push v*).
   workflow_dispatch:
 
 permissions:
@@ -36,18 +36,18 @@ jobs:
           echo "Git tag (no v): $TAG"
           echo "pubspec version:   $VER"
           if [ "$TAG" != "$VER" ]; then
-            echo "::error::Версія в pubspec ($VER) не збігається з тегом (v$TAG). Оновіть pubspec або перейменуйте тег."
+            echo "::error::pubspec version ($VER) does not match tag (v$TAG). Update pubspec or retag."
             exit 1
           fi
           echo "RELEASE_VERSION=$TAG" >> "$GITHUB_ENV"
 
-      - name: Setup Java (для перевірки Android-частини плагіна)
+      - name: Setup Java (Android plugin verification)
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17"
 
-      - name: Setup Flutter (пін з .github/flutter-version)
+      - name: Setup Flutter (pin from .github/flutter-version)
         uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .github/flutter-version
@@ -74,6 +74,27 @@ jobs:
       - name: pub publish --dry-run
         run: flutter pub publish --dry-run
 
+      # GitHub Release right after green CI, BEFORE pub.dev — otherwise OIDC/pub publish failure
+      # would skip creating a GitHub release entirely.
+      - name: GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: bidscube_sdk_flutter ${{ env.RELEASE_VERSION }}
+          generate_release_notes: true
+          body: |
+            ## Install (pub.dev)
+
+            ```yaml
+            dependencies:
+              bidscube_sdk_flutter: ^${{ env.RELEASE_VERSION }}
+            ```
+
+            Docs: [pub.dev/packages/bidscube_sdk_flutter](https://pub.dev/packages/bidscube_sdk_flutter)
+
+            See also [RELEASE.md](https://github.com/${{ github.repository }}/blob/main/RELEASE.md) in this repository.
+
       - name: Publish to pub.dev
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         shell: bash
@@ -84,27 +105,8 @@ jobs:
           echo "$output"
           if [ "$rc" -ne 0 ]; then
             if echo "$output" | grep -qi "already exists"; then
-              echo "Версія вже на pub.dev — продовжуємо до GitHub Release."
+              echo "Version already on pub.dev — workflow finished."
               exit 0
             fi
             exit "$rc"
           fi
-
-      - name: GitHub Release
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: bidscube_sdk_flutter ${{ env.RELEASE_VERSION }}
-          generate_release_notes: true
-          body: |
-            ## Встановлення (pub.dev)
-
-            ```yaml
-            dependencies:
-              bidscube_sdk_flutter: ^${{ env.RELEASE_VERSION }}
-            ```
-
-            Документація: [pub.dev/packages/bidscube_sdk_flutter](https://pub.dev/packages/bidscube_sdk_flutter)
-
-            Див. також [RELEASE.md](https://github.com/${{ github.repository }}/blob/main/RELEASE.md) у репозиторії.

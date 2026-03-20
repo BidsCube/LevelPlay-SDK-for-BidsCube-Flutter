@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Flutter (пін з .github/flutter-version)
+      - name: Setup Flutter (pin from .github/flutter-version)
         uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .github/flutter-version

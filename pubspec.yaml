@@ -4,7 +4,7 @@ version: 1.0.0
 homepage: https://github.com/bidscube/bidscube-sdk-flutter
 
 environment:
-  # CI: версія Flutter для GitHub Actions — `.github/flutter-version` (див. workflows).
+  # CI: Flutter version for GitHub Actions — `.github/flutter-version` (see workflows).
   sdk: ">=3.5.0 <4.0.0"
   flutter: ">=3.19.0"
 
