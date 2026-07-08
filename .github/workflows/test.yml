@@ -30,17 +30,7 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Check formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Verify package
-        run: flutter pub publish --dry-run
+      - name: Validate package
+        run: |
+          chmod +x scripts/validate-package.sh
+          ./scripts/validate-package.sh

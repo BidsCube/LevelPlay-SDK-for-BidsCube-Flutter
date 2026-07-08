@@ -1,12 +1,18 @@
-# Ignore testapp folder from published package
-# This prevents the test application and its files from being included in the package
-
-testapp/
-
-# You can add more patterns to exclude other dev-only files if necessary
-# For example:
-# .github/
-# .idea/
-# build/
-# scripts/
-
+.git/
+.github/
+build/
+.dart_tool/
+example/
+testApp/
+**/build/
+**/.dart_tool/
+**/.gradle/
+**/local.properties
+**/Pods/
+**/.symlinks/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+__MACOSX/
+.DS_Store
+._*
+*.iml

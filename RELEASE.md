@@ -1,39 +1,29 @@
-# Releasing `bidscube_sdk_flutter` (e.g. **1.0.0**)
+# Release — bidscube_levelplay_flutter
 
-Publishing runs via the GitHub Actions workflow **[`.github/workflows/release.yml`](.github/workflows/release.yml)** after you push a **git tag** `v<version>`.
+Lightweight LevelPlay wiring package. Tag `v*` must match `pubspec.yaml` `version`.
 
-## Requirements
+## Pre-release
 
-1. The version in **`pubspec.yaml`** (`version:`) **must match** the tag without the `v` prefix  
-   (tag `v1.0.0` → `pubspec.yaml` must have `version: 1.0.0`).
-2. On [pub.dev](https://pub.dev), **Automated publishing** is enabled for this package with this GitHub repository (OIDC).  
-   See [Automated publishing](https://dart.dev/tools/pub/automated-publishing).
-3. The workflow includes `permissions: id-token: write` — required for OIDC to pub.dev.
-4. **Flutter for CI** is pinned in **`.github/flutter-version`** (one line, e.g. `3.27.4`). The `release.yml` and `test.yml` workflows use `flutter-version-file` and do not depend on the Dart version bundled with `ubuntu-latest`.
+```bash
+chmod +x scripts/validate-package.sh
+./scripts/validate-package.sh
+```
 
-## Steps to release 1.0.0
+Clean archive (no `.git`, `build/`, `.dart_tool/`):
 
-1. Ensure the repository has:
-   - `pubspec.yaml` → `version: 1.0.0`
-   - as needed, updated `CHANGELOG.md`, `ios/*.podspec`, `android/build.gradle` (`version = ...`).
-2. Commit to `main` (or the branch you release from).
-3. Create and push the tag:
+```bash
+git archive --format=zip --output ../LevelPlay-SDK-Flutter-release.zip HEAD
+unzip -l ../LevelPlay-SDK-Flutter-release.zip | grep -E '(^|/)(\.git|build/|\.dart_tool/|\.gradle/|local\.properties|Pods/|\.symlinks/|__MACOSX|\.DS_Store|/\._)' && exit 1 || true
+```
 
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
+## Publish
 
-4. In GitHub → **Actions** → workflow **Release (pub.dev + GitHub)** should:
-   - verify the version matches the tag;
-   - run `flutter test`, `analyze`, `pub publish --dry-run`;
-   - create a **GitHub Release** for the tag (right after green CI, independent of pub.dev success);
-   - publish to **pub.dev** (`dart pub publish -f`).
+1. Bump `pubspec.yaml` version
+2. Update `CHANGELOG.md`
+3. Tag `vX.Y.Z` and push — GitHub Actions publishes to pub.dev and creates a GitHub Release
 
-## Manual check without a release
+## Release status
 
-**Actions** → **Release (pub.dev + GitHub)** → **Run workflow**: runs tests and `pub publish --dry-run` with no publish and no GitHub Release (no tag push event).
-
-## If the version is already on pub.dev
-
-If `dart pub publish` returns an “already exists” error, the workflow treats that as success (the GitHub Release was already created in the step above).
+- **LevelPlay Flutter:** lightweight wrapper; delegates to native adapters and `unity_levelplay_mediation`
+- **OpenRTB 2.6:** not implemented yet
+- **Native LevelPlay:** not supported

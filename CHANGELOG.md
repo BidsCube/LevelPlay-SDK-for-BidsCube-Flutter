@@ -1,56 +1,25 @@
+# Changelog
+
+## 2.0.0
+
+**Breaking:** Replaced the heavy direct SDK plugin (`bidscube_sdk_flutter`) with a lightweight LevelPlay wiring package (`bidscube_levelplay_flutter`).
+
+### Added
+
+- Minimal Dart API: `BidscubeLevelPlayFlutter.initialize`, `getNativeSdkVersion`, `getAdapterVersion`
+- Android dependency on `com.bidscube:levelplay-bidscube-adapter`
+- iOS dependency on `LevelPlayMediationBidscubeAdapter`
+- `scripts/validate-package.sh`
+
+### Removed
+
+- Direct ad widgets, PlatformViews, VAST/OpenRTB Dart parsers, HTTP ad client, example app, and multi-platform desktop/web targets
+
+### Notes
+
+- Load/show must use Unity's official `unity_levelplay_mediation` plugin
+- OpenRTB 2.6 response parsing is not implemented yet in native SDKs
+
 ## 1.0.0
 
-* Version aligned with LevelPlay / Bidscube stack **1.0.0** (Android, iOS, Unity).
-* **LevelPlay**: `BidscubeIntegrationMode` / `SDKConfig.integrationMode` — `levelPlayMediation` initializes the native SDK; Dart widget methods are disabled (ads via IronSource/LevelPlay). Documented in the README **LevelPlay (IronSource) mediation** section.
-* **Android plugin**: Flutter plugin (`android/src/main/...`, `BidscubeSdkFlutterPlugin`), native SDK `com.bidscube:bidscube-sdk:1.0.0` + `mavenLocal()` for local dev, `ActivityAware`, callbacks to Dart, PlatformView `bidscube_native_ad`.
-* **iOS plugin**: banner via `getImageAdView`, unique `viewId`, callbacks to Dart.
-* **Dart**: `AndroidView` on Android for native ads; full `example/`.
-* Android: transitive SDK dependencies, desugar 2.1.3 in example, minSdk 24.
-* Version / pub.dev compliance updates
-
-## 1.2.0
-
-* Fix for Android build
-* Added onAdRenderOverride callback to notify when an ad is rendered with position override
-* Improved error handling and logging for ad loading and rendering
-* Updated dependencies to latest versions
-* Minor documentation updates and code cleanup
-
-## 1.1.0
-
-* Major API cleanup and doc updates for publishing to pub.dev
-* Fixed missing type imports (AdPosition, etc.) for platform builds
-* Updated pubspec fields for pub.dev compliance and metadata
-* Optimized builder pattern for SDKConfig (default URLs, etc.)
-* Expanded README with usage, configuration, testApp details
-* Removed example/, created testApp/ for better cross-platform demos
-* Miscellaneous bugfixes, compliance improvements, and code cleanup
-
-## 0.1.1
-
-* Dependency updates to latest versions (Flutter, Dart, and all plugins)
-* Improved documentation coverage for public API
-* Added a complete example in example/main.dart
-* Fixed static analysis and lint warnings
-* Added library directives to fix dangling doc comments
-* Fixed unused variable and whitespace widget issues
-* Improved consent management callback handling in testapp
-* Various bugfixes and code cleanup for pub.dev compliance
-
-## 0.1.0
-
-* Initial release of BidsCube Flutter SDK
-* Multi-platform support (Android, iOS, Web, Desktop)
-* Image, Video, and Native ad support
-* Multiple ad positions with dynamic styling
-* VAST video ad support with IMA SDK integration
-* Responsive native ads with flexible layouts
-* Position override functionality for testing
-* Comprehensive error handling and logging
-* Production-ready SDKLogger implementation
-* Unified API across all platforms
-* Real-time position changes with visual feedback
-
-## 0.0.1
-
-* TODO: Describe initial release.
+Legacy full direct SDK package (`bidscube_sdk_flutter`). Superseded by 2.0.0 for LevelPlay mediation use cases.
