@@ -37,6 +37,7 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     let sspHost = args?["sspHost"] as? String
     let enableLogging = args?["enableLogging"] as? Bool ?? false
     let enableDebugMode = args?["enableDebugMode"] as? Bool ?? false
+    let userId = args?["userId"] as? String
 
     let builder = SDKConfig.Builder()
       .enableLogging(enableLogging)
@@ -46,6 +47,10 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
       builder.baseURL(authority)
     } else if let host = sspHost, !host.isEmpty {
       builder.baseURL(host)
+    }
+
+    if let userId = userId, !userId.isEmpty {
+      builder.userId(userId)
     }
 
     BidscubeSDK.initialize(config: builder.build())

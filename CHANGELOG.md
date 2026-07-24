@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.1
+
+### Added
+
+- `BidscubeLevelPlayConfig.userId` — forwarded to native `SDKConfig.userId` and sent as SSP query param `user_id` (for postback)
+
+### Changed
+
+- Native Android/iOS adapter dependency floor bumped to `1.0.1`
+
 ## 2.0.0
 
 **Breaking:** Replaced the heavy direct SDK plugin (`bidscube_sdk_flutter`) with a lightweight LevelPlay wiring package (`bidscube_levelplay_flutter`).

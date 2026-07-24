@@ -44,5 +44,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "com.bidscube:levelplay-bidscube-adapter:1.0.0"
+    implementation "com.bidscube:levelplay-bidscube-adapter:1.0.1"
 }

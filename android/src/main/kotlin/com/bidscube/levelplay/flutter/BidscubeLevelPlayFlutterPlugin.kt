@@ -44,6 +44,7 @@ class BidscubeLevelPlayFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHa
         val sspHost = call.argument<String>("sspHost")
         val enableLogging = call.argument<Boolean>("enableLogging") ?: false
         val enableDebugMode = call.argument<Boolean>("enableDebugMode") ?: false
+        val userId = call.argument<String>("userId")
 
         if (!requestAuthority.isNullOrBlank() || !sspHost.isNullOrBlank()) {
             Log.d(
@@ -52,12 +53,17 @@ class BidscubeLevelPlayFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHa
             )
         }
 
-        val config = SDKConfig.Builder(applicationContext)
+        val builder = SDKConfig.Builder(applicationContext)
             .enableLogging(enableLogging)
             .enableDebugMode(enableDebugMode)
             .defaultAdTimeout(30000)
             .defaultAdPosition("UNKNOWN")
-            .build()
+
+        if (!userId.isNullOrBlank()) {
+            builder.userId(userId)
+        }
+
+        val config = builder.build()
 
         Log.i(TAG, "Initializing BidscubeSDK from Flutter LevelPlay wiring (pre-init).")
         BidscubeSDK.initialize(applicationContext, config)
@@ -69,7 +75,7 @@ class BidscubeLevelPlayFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHa
 
     private companion object {
         private const val TAG = "BidscubeLevelPlayFlutter"
-        private const val NATIVE_SDK_VERSION = "1.0.0"
-        private const val ADAPTER_VERSION = "1.0.0"
+        private const val NATIVE_SDK_VERSION = "1.0.1"
+        private const val ADAPTER_VERSION = "1.0.1"
     }
 }

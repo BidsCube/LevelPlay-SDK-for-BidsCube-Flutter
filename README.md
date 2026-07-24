@@ -42,7 +42,7 @@ dependencies:
 This plugin adds:
 
 ```gradle
-implementation "com.bidscube:levelplay-bidscube-adapter:1.0.0"
+implementation "com.bidscube:levelplay-bidscube-adapter:1.0.1"
 ```
 
 The adapter pulls `com.bidscube:bidscube-sdk` transitively.
@@ -54,7 +54,7 @@ The adapter pulls `com.bidscube:bidscube-sdk` transitively.
 This plugin's podspec adds:
 
 ```ruby
-s.dependency 'LevelPlayMediationBidscubeAdapter', '~> 1.0.0'
+s.dependency 'LevelPlayMediationBidscubeAdapter', '~> 1.0.1'
 ```
 
 `BidscubeSDK` and `IronSourceSDK` come from the adapter podspec. Use CocoaPods integration in the host app.
@@ -67,6 +67,7 @@ import 'package:bidscube_levelplay_flutter/bidscube_levelplay_flutter.dart';
 await BidscubeLevelPlayFlutter.initialize(
   config: const BidscubeLevelPlayConfig(
     enableLogging: true,
+    userId: 'YOUR_USER_ID', // optional — sent as user_id for postback
   ),
 );
 

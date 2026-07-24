@@ -8,6 +8,7 @@ void main() {
       sspHost: 'ssp.example.com',
       enableLogging: true,
       enableDebugMode: false,
+      userId: 'user-123',
     );
 
     expect(config.toMap(), {
@@ -15,6 +16,7 @@ void main() {
       'sspHost': 'ssp.example.com',
       'enableLogging': true,
       'enableDebugMode': false,
+      'userId': 'user-123',
     });
   });
 }
