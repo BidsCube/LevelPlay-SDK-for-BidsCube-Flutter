@@ -14,6 +14,14 @@ class BidscubeLevelPlayFlutter {
     return BidscubeLevelPlayFlutterPlatform.instance.initialize(config);
   }
 
+  /// Update publisher user id after [initialize].
+  ///
+  /// Sent to SSP as query param `user_id` on subsequent ad requests (for postback).
+  /// Pass `null` or empty string to clear.
+  static Future<void> setUserId(String? userId) {
+    return BidscubeLevelPlayFlutterPlatform.instance.setUserId(userId);
+  }
+
   static Future<String> getNativeSdkVersion() {
     return BidscubeLevelPlayFlutterPlatform.instance.getNativeSdkVersion();
   }

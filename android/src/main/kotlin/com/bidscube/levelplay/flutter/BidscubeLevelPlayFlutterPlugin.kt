@@ -29,6 +29,23 @@ class BidscubeLevelPlayFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHa
                     result.error("init_failed", e.message, null)
                 }
             }
+            "setUserId" -> {
+                try {
+                    if (!BidscubeSDK.isInitialized()) {
+                        result.error(
+                            "not_initialized",
+                            "Call BidscubeLevelPlayFlutter.initialize before setUserId",
+                            null,
+                        )
+                        return
+                    }
+                    BidscubeSDK.setUserId(call.argument<String>("userId"))
+                    result.success(null)
+                } catch (e: Exception) {
+                    Log.e(TAG, "setUserId failed", e)
+                    result.error("set_user_id_failed", e.message, null)
+                }
+            }
             "getNativeSdkVersion" -> result.success(NATIVE_SDK_VERSION)
             "getAdapterVersion" -> result.success(ADAPTER_VERSION)
             else -> result.notImplemented()

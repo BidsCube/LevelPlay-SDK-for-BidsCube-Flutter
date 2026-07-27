@@ -20,6 +20,9 @@ abstract class BidscubeLevelPlayFlutterPlatform extends PlatformInterface {
 
   Future<void> initialize(BidscubeLevelPlayConfig config);
 
+  /// Update publisher user id after [initialize]. Sent as SSP `user_id` for postback.
+  Future<void> setUserId(String? userId);
+
   Future<String> getNativeSdkVersion();
 
   Future<String> getAdapterVersion();

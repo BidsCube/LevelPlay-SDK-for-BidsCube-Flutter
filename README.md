@@ -71,6 +71,9 @@ await BidscubeLevelPlayFlutter.initialize(
   ),
 );
 
+// Optional: update user id after login / identity change
+await BidscubeLevelPlayFlutter.setUserId('UPDATED_USER_ID');
+
 // Then use unity_levelplay_mediation for LevelPlay init/load/show.
 ```
 

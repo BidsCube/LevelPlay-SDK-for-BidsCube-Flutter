@@ -14,6 +14,11 @@ class MethodChannelBidscubeLevelPlayFlutter
   }
 
   @override
+  Future<void> setUserId(String? userId) async {
+    await _channel.invokeMethod<void>('setUserId', {'userId': userId});
+  }
+
+  @override
   Future<String> getNativeSdkVersion() async {
     final version = await _channel.invokeMethod<String>('getNativeSdkVersion');
     return version ?? 'unknown';

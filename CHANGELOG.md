@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3
+
+### Added
+
+- `BidscubeLevelPlayFlutter.setUserId` — runtime update of publisher user id after initialize (SSP `user_id` for postback)
+
 ## 2.0.2
 
 ### Changed

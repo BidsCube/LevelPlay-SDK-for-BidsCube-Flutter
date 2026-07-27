@@ -17,6 +17,8 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "initialize":
       initializeBidscubeIfNeeded(call: call, result: result)
+    case "setUserId":
+      setUserId(call: call, result: result)
     case "getNativeSdkVersion":
       result(Constants.sdkVersion)
     case "getAdapterVersion":
@@ -24,6 +26,23 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     default:
       result(FlutterMethodNotImplemented)
     }
+  }
+
+  private func setUserId(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard BidscubeSDK.isInitialized() else {
+      result(
+        FlutterError(
+          code: "not_initialized",
+          message: "Call BidscubeLevelPlayFlutter.initialize before setUserId",
+          details: nil
+        )
+      )
+      return
+    }
+    let args = call.arguments as? [String: Any]
+    let userId = args?["userId"] as? String
+    BidscubeSDK.setUserId(userId)
+    result(nil)
   }
 
   private func initializeBidscubeIfNeeded(call: FlutterMethodCall, result: @escaping FlutterResult) {
