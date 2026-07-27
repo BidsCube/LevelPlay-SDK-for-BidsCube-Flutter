@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.2
+
+### Changed
+
+- Native Android/iOS adapter dependency floor bumped to `1.0.2` (includes `setUserId` / `user_id` postback support)
+
 ## 2.0.1
 
 ### Added

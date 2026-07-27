@@ -42,7 +42,7 @@ dependencies:
 This plugin adds:
 
 ```gradle
-implementation "com.bidscube:levelplay-bidscube-adapter:1.0.1"
+implementation "com.bidscube:levelplay-bidscube-adapter:1.0.2"
 ```
 
 The adapter pulls `com.bidscube:bidscube-sdk` transitively.
@@ -54,7 +54,7 @@ The adapter pulls `com.bidscube:bidscube-sdk` transitively.
 This plugin's podspec adds:
 
 ```ruby
-s.dependency 'LevelPlayMediationBidscubeAdapter', '~> 1.0.1'
+s.dependency 'LevelPlayMediationBidscubeAdapter', '~> 1.0.2'
 ```
 
 `BidscubeSDK` and `IronSourceSDK` come from the adapter podspec. Use CocoaPods integration in the host app.

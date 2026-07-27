@@ -75,7 +75,7 @@ class BidscubeLevelPlayFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHa
 
     private companion object {
         private const val TAG = "BidscubeLevelPlayFlutter"
-        private const val NATIVE_SDK_VERSION = "1.0.1"
-        private const val ADAPTER_VERSION = "1.0.1"
+        private const val NATIVE_SDK_VERSION = "1.0.2"
+        private const val ADAPTER_VERSION = "1.0.2"
     }
 }
