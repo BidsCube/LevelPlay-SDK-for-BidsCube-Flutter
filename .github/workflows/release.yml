@@ -1,5 +1,13 @@
-# pub.dev + GitHub Release on push of tag v* (e.g. v2.0.0).
-# pubspec.yaml version: must match the tag without the v prefix.
+# GitHub Release on push of tag v* (e.g. v1.0.3).
+# pubspec.yaml version must match the tag without the v prefix.
+#
+# pub.dev publish is OPTIONAL (separate job). Enable only after OIDC is configured:
+#   pub.dev package admin → Automated publishing → link this GitHub repo
+#   GitHub repo → Settings → Secrets and variables → Actions → Variables:
+#     PUB_DEV_PUBLISH_ENABLED = true
+#
+# Without that variable, tag push creates GitHub Release only (fast, no hang).
+# Manual pub.dev: dart pub publish -f  (local) or re-run workflow with publish_pub_dev.
 
 name: Release (pub.dev + GitHub)
 
@@ -8,6 +16,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      publish_pub_dev:
+        description: "Attempt pub.dev publish (requires OIDC on pub.dev)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -53,10 +66,22 @@ jobs:
       - name: Disable analytics (CI)
         run: flutter config --no-analytics
 
-      - name: Validate package
+      - name: Versions
         run: |
-          chmod +x scripts/validate-package.sh
-          ./scripts/validate-package.sh
+          flutter --version
+          dart --version
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Test
+        run: flutter test
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: pub publish --dry-run
+        run: flutter pub publish --dry-run
 
       - name: Build clean source archive (git archive)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -73,7 +98,20 @@ jobs:
           generate_release_notes: true
           files: LevelPlay-SDK-Flutter-release.zip
           body: |
-            ## Install (pub.dev)
+            ## Install
+
+            **GitHub** (path or git dependency):
+
+            ```yaml
+            dependencies:
+              unity_levelplay_mediation: ^9.2.0
+              bidscube_levelplay_flutter:
+                git:
+                  url: https://github.com/${{ github.repository }}.git
+                  ref: ${{ github.ref_name }}
+            ```
+
+            **pub.dev** (when published):
 
             ```yaml
             dependencies:
@@ -81,20 +119,60 @@ jobs:
               bidscube_levelplay_flutter: ^${{ env.RELEASE_VERSION }}
             ```
 
-            Load/show via `unity_levelplay_mediation`. See README.
+            Load/show via `unity_levelplay_mediation`. Docs: [README](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/README.md)
+
+            See [RELEASE.md](https://github.com/${{ github.repository }}/blob/main/RELEASE.md) for pub.dev OIDC setup.
+
+  publish-pubdev:
+    needs: release
+    runs-on: ubuntu-latest
+    # Skip by default — avoids hang when pub.dev OIDC is not linked.
+    if: |
+      (github.event_name == 'workflow_dispatch' && inputs.publish_pub_dev) ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && vars.PUB_DEV_PUBLISH_ENABLED == 'true')
+    continue-on-error: true
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .github/flutter-version
+          channel: stable
+          cache: true
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Verify pub.dev OIDC prerequisites
+        run: |
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "::warning::OIDC unavailable (id-token: write). Skipping pub.dev."
+            exit 1
+          fi
+          echo "OIDC token endpoint available."
 
       - name: Publish to pub.dev
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        timeout-minutes: 3
         shell: bash
         run: |
           set +e
-          output=$(dart pub publish -f 2>&1)
+          output="$(timeout 120 dart pub publish -f 2>&1)"
           rc=$?
           echo "$output"
+          if [ "$rc" -eq 124 ]; then
+            echo "::warning::pub publish timed out after 2 minutes."
+            echo "Enable Automated publishing on pub.dev for this repo, or publish locally: dart pub publish -f"
+            exit 1
+          fi
           if [ "$rc" -ne 0 ]; then
             if echo "$output" | grep -qi "already exists"; then
-              echo "Version already on pub.dev — workflow finished."
+              echo "Version already on pub.dev."
               exit 0
             fi
+            echo "::warning::pub.dev publish failed (rc=$rc). GitHub Release is still valid."
             exit "$rc"
           fi
+          echo "Published to pub.dev successfully."
