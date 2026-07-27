@@ -1,6 +1,6 @@
 name: bidscube_levelplay_flutter
 description: Lightweight LevelPlay wiring for Bidscube — native Android/iOS adapter dependencies and optional pre-init bridge. Load/show via unity_levelplay_mediation.
-version: 2.0.3
+version: 1.0.3
 homepage: https://github.com/BidsCube/LevelPlay-SDK-Flutter
 
 environment:
