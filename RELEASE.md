@@ -1,4 +1,4 @@
-# Releasing `bidscube_levelplay_flutter` (e.g. **1.0.3**)
+# Releasing `bidscube_levelplay_flutter` (e.g. **1.0.4**)
 
 Publishing runs via the GitHub Actions workflow **[`.github/workflows/release.yml`](.github/workflows/release.yml)** after you push a **git tag** `v<version>`.
 
@@ -7,23 +7,23 @@ Same release model as [AppLovin-SDK-for-BidsCube-Flutter](https://github.com/Bid
 ## Requirements
 
 1. The version in **`pubspec.yaml`** (`version:`) **must match** the tag without the `v` prefix  
-   (tag `v1.0.3` → `pubspec.yaml` must have `version: 1.0.3`).
+   (tag `v1.0.4` → `pubspec.yaml` must have `version: 1.0.4`).
 2. On [pub.dev](https://pub.dev), **Automated publishing** is optional. Only needed if you enable pub.dev in CI.  
    See [Automated publishing](https://dart.dev/tools/pub/automated-publishing).
 3. The workflow includes `permissions: id-token: write` — required for OIDC to pub.dev.
 4. **Flutter for CI** is pinned in **`.github/flutter-version`** (one line, e.g. `3.27.4`).
 
-## Steps to release 1.0.3
+## Steps to release 1.0.4
 
 1. Ensure the repository has:
-   - `pubspec.yaml` → `version: 1.0.3`
+   - `pubspec.yaml` → `version: 1.0.4`
    - as needed, updated `CHANGELOG.md`, `ios/*.podspec`
 2. Commit to `main` (or the branch you release from).
 3. Create and push the tag:
 
    ```bash
-   git tag v1.0.3
-   git push origin v1.0.3
+   git tag v1.0.4
+   git push origin v1.0.4
    ```
 
 4. In GitHub → **Actions** → workflow **Release (pub.dev + GitHub)** should:

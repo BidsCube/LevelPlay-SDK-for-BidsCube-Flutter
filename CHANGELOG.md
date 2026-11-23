@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.4
+
+### Added
+
+- Expanded `BidscubeLevelPlayConfig` (timeout, test mode, privacy, OpenRTB pod flags) aligned with base `bidscube_sdk_flutter` init surface
+- `BidscubeLevelPlayFlutter.getUserId`, `isInitialized`, `cleanup`
+- Android pre-init applies privacy + pod flags when provided
+- Android TV support: `LevelPlayVideoFullscreenPolicy` + `setVideoFullscreenPolicy` / `getVideoFullscreenPolicy` (native `FullscreenPolicy.AUTO` on Leanback)
+- Android adapter dependency floor bumped to `1.1.0` (SDK full-video `1.2.12`)
+
+### Fixed
+
+- Android Flutter pre-init now sets `videoAdsEnabled(true)` so LevelPlay video/rewarded is not disabled when this package initializes first
+
 ## 1.0.3
 
 ### Added

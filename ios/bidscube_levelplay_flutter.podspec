@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'bidscube_levelplay_flutter'
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'Lightweight Bidscube LevelPlay wiring for Flutter'
   s.description      = 'Depends on LevelPlayMediationBidscubeAdapter; load/show via unity_levelplay_mediation.'
   s.homepage         = 'https://github.com/BidsCube/LevelPlay-SDK-Flutter'

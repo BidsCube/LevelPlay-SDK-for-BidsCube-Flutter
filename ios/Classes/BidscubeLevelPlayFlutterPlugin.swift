@@ -19,6 +19,17 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
       initializeBidscubeIfNeeded(call: call, result: result)
     case "setUserId":
       setUserId(call: call, result: result)
+    case "getUserId":
+      getUserId(result: result)
+    case "isInitialized":
+      result(BidscubeSDK.isInitialized())
+    case "cleanup":
+      cleanup(result: result)
+    case "setVideoFullscreenPolicy":
+      setVideoFullscreenPolicy(call: call, result: result)
+    case "getVideoFullscreenPolicy":
+      // LevelPlay has no tvOS slice; keep Dart API stable with Android default.
+      result("auto")
     case "getNativeSdkVersion":
       result(Constants.sdkVersion)
     case "getAdapterVersion":
@@ -26,6 +37,16 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     default:
       result(FlutterMethodNotImplemented)
     }
+  }
+
+  private func setVideoFullscreenPolicy(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    let args = call.arguments as? [String: Any]
+    let policy = args?["policy"] as? String ?? "auto"
+    NSLog(
+      "[BidscubeLevelPlayFlutter] setVideoFullscreenPolicy(%@) ignored on iOS LevelPlay — IronSource has no tvOS slice; use BidscubeSDK directly on Apple TV.",
+      policy
+    )
+    result(nil)
   }
 
   private func setUserId(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -45,6 +66,21 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     result(nil)
   }
 
+  private func getUserId(result: @escaping FlutterResult) {
+    guard BidscubeSDK.isInitialized() else {
+      result(nil)
+      return
+    }
+    result(BidscubeSDK.getUserId())
+  }
+
+  private func cleanup(result: @escaping FlutterResult) {
+    if BidscubeSDK.isInitialized() {
+      BidscubeSDK.cleanup()
+    }
+    result(nil)
+  }
+
   private func initializeBidscubeIfNeeded(call: FlutterMethodCall, result: @escaping FlutterResult) {
     if BidscubeSDK.isInitialized() {
       result(nil)
@@ -57,10 +93,45 @@ public class BidscubeLevelPlayFlutterPlugin: NSObject, FlutterPlugin {
     let enableLogging = args?["enableLogging"] as? Bool ?? false
     let enableDebugMode = args?["enableDebugMode"] as? Bool ?? false
     let userId = args?["userId"] as? String
+    let defaultAdTimeout = (args?["defaultAdTimeout"] as? NSNumber)?.intValue ?? 30000
+    let enableTestMode = args?["enableTestMode"] as? Bool ?? false
+
+    // Android-only / reserved on current iOS SDKConfig — log so publishers know.
+    if args?["gdpr"] != nil
+      || args?["gdprConsent"] != nil
+      || args?["usPrivacy"] != nil
+      || args?["coppa"] != nil
+    {
+      NSLog(
+        "[BidscubeLevelPlayFlutter] privacy fields received but not applied on this iOS SDKConfig version."
+      )
+    }
+    if args?["openRtbPodMetadataEnabled"] != nil
+      || args?["videoPodDurationValidationMode"] != nil
+      || args?["videoPodSkipPolicy"] != nil
+      || args?["videoPodContinueOnSlotError"] != nil
+      || args?["videoPodShowCounter"] != nil
+    {
+      NSLog(
+        "[BidscubeLevelPlayFlutter] OpenRTB pod flags received but reserved/not applied on this iOS SDKConfig version."
+      )
+    }
+    if enableTestMode {
+      NSLog(
+        "[BidscubeLevelPlayFlutter] enableTestMode received; no dedicated iOS SDK flag — logged only."
+      )
+    }
+    if let policy = args?["videoFullscreenPolicy"] as? String, !policy.isEmpty {
+      NSLog(
+        "[BidscubeLevelPlayFlutter] videoFullscreenPolicy(%@) reserved on iOS LevelPlay (no Apple TV mediation).",
+        policy
+      )
+    }
 
     let builder = SDKConfig.Builder()
       .enableLogging(enableLogging)
       .enableDebugMode(enableDebugMode)
+      .defaultAdTimeout(defaultAdTimeout)
 
     if let authority = requestAuthority, !authority.isEmpty {
       builder.baseURL(authority)

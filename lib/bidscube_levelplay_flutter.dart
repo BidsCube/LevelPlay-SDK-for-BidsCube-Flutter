@@ -22,6 +22,39 @@ class BidscubeLevelPlayFlutter {
     return BidscubeLevelPlayFlutterPlatform.instance.setUserId(userId);
   }
 
+  /// Current publisher user id, or `null` if unset / not initialized.
+  static Future<String?> getUserId() {
+    return BidscubeLevelPlayFlutterPlatform.instance.getUserId();
+  }
+
+  /// Whether native Bidscube SDK has been initialized.
+  static Future<bool> isInitialized() {
+    return BidscubeLevelPlayFlutterPlatform.instance.isInitialized();
+  }
+
+  /// Tear down native Bidscube SDK.
+  ///
+  /// For QA / hot-restart only — do not call during active LevelPlay mediation.
+  static Future<void> cleanup() {
+    return BidscubeLevelPlayFlutterPlatform.instance.cleanup();
+  }
+
+  /// Android TV / Leanback video fullscreen policy.
+  ///
+  /// Default [LevelPlayVideoFullscreenPolicy.auto]: fullscreen on TV; phone
+  /// follows ad position. Also settable via [BidscubeLevelPlayConfig.videoFullscreenPolicy].
+  /// LevelPlay does not run on Apple TV.
+  static Future<void> setVideoFullscreenPolicy(
+    LevelPlayVideoFullscreenPolicy policy,
+  ) {
+    return BidscubeLevelPlayFlutterPlatform.instance
+        .setVideoFullscreenPolicy(policy);
+  }
+
+  static Future<LevelPlayVideoFullscreenPolicy> getVideoFullscreenPolicy() {
+    return BidscubeLevelPlayFlutterPlatform.instance.getVideoFullscreenPolicy();
+  }
+
   static Future<String> getNativeSdkVersion() {
     return BidscubeLevelPlayFlutterPlatform.instance.getNativeSdkVersion();
   }

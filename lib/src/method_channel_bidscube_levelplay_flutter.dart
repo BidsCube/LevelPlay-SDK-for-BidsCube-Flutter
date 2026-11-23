@@ -19,6 +19,38 @@ class MethodChannelBidscubeLevelPlayFlutter
   }
 
   @override
+  Future<String?> getUserId() async {
+    return _channel.invokeMethod<String?>('getUserId');
+  }
+
+  @override
+  Future<bool> isInitialized() async {
+    final value = await _channel.invokeMethod<bool>('isInitialized');
+    return value ?? false;
+  }
+
+  @override
+  Future<void> cleanup() async {
+    await _channel.invokeMethod<void>('cleanup');
+  }
+
+  @override
+  Future<void> setVideoFullscreenPolicy(
+    LevelPlayVideoFullscreenPolicy policy,
+  ) async {
+    await _channel.invokeMethod<void>('setVideoFullscreenPolicy', {
+      'policy': policy.stableString,
+    });
+  }
+
+  @override
+  Future<LevelPlayVideoFullscreenPolicy> getVideoFullscreenPolicy() async {
+    final value =
+        await _channel.invokeMethod<String>('getVideoFullscreenPolicy');
+    return LevelPlayVideoFullscreenPolicyX.fromStableString(value);
+  }
+
+  @override
   Future<String> getNativeSdkVersion() async {
     final version = await _channel.invokeMethod<String>('getNativeSdkVersion');
     return version ?? 'unknown';
