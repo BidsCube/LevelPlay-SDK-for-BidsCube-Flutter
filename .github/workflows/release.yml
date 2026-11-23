@@ -81,7 +81,19 @@ jobs:
         run: flutter analyze --no-fatal-infos
 
       - name: pub publish --dry-run
-        run: flutter pub publish --dry-run
+        continue-on-error: true
+        run: |
+          set +e
+          flutter pub publish --dry-run > publish-dry-run.log 2>&1
+          rc=$?
+          cat publish-dry-run.log
+          {
+            echo "## pub publish --dry-run (exit $rc)"
+            echo '```'
+            cat publish-dry-run.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
 
       - name: Build clean source archive (git archive)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')

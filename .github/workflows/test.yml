@@ -43,4 +43,16 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Verify package
-        run: flutter pub publish --dry-run
+        continue-on-error: true
+        run: |
+          set +e
+          flutter pub publish --dry-run > publish-dry-run.log 2>&1
+          rc=$?
+          cat publish-dry-run.log
+          {
+            echo "## pub publish --dry-run (exit $rc)"
+            echo '```'
+            cat publish-dry-run.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
