@@ -11,7 +11,7 @@ Same release model as [AppLovin-SDK-for-BidsCube-Flutter](https://github.com/Bid
 2. On [pub.dev](https://pub.dev), **Automated publishing** is optional. Only needed if you enable pub.dev in CI.  
    See [Automated publishing](https://dart.dev/tools/pub/automated-publishing).
 3. The workflow includes `permissions: id-token: write` — required for OIDC to pub.dev.
-4. **Flutter for CI** is pinned in **`.github/flutter-version`** (one line, e.g. `3.27.4`).
+4. **Flutter for CI** is pinned in **`.github/flutter-version`** (one line, e.g. `3.38.5`).
 
 ## Steps to release 1.0.4
 
